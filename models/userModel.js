@@ -39,3 +39,6 @@ const userSchema=mongoose.Schema({
     }
     
 });
+
+userModel=mongoose.model('userModel',userSchema);
+module.exports=userModel;

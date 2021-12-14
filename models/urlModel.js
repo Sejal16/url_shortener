@@ -33,4 +33,8 @@ const urlSchema=new mongoose.Schema({
 }
     
 });
-module.exports=mongoose.model('ShortUrl',urlSchema)
+
+
+urlModel=mongoose.model('urlModel',urlSchema);
+module.exports=urlModel;
+
