@@ -10,10 +10,11 @@ const urlSchema=new mongoose.Schema({
     type:String
    },
    timesClicked:{
-    type:Number
+    type:Number,
+    default : 0  
    },
    browsers:{
-    type:String
+   type:String    
    },
    user:{
     type:mongoose.Schema.ObjectId,
@@ -23,3 +24,4 @@ const urlSchema=new mongoose.Schema({
 }
     
 });
+module.exports=mongoose.model('ShortUrl',urlSchema)
