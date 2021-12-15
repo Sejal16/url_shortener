@@ -1,10 +1,11 @@
 const mongoose=require('mongoose');
 const emailValidator=require('email-validator');
+
 // <--------------Linking MongoDB to server---------->
-const db_link="mongodb+srv://admin:<ghJ8u9PPxH2K5s0a>@cluster0.jbvca.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
+const db_link="mongodb+srv://admin:ghJ8u9PPxH2K5s0a@cluster0.jbvca.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
 mongoose.connect(db_link)
 .then(function(db){
-    console.log("Plan db connected");
+    console.log("user db connected");
 })
 .catch(function(err){
     console.log(err);
@@ -30,11 +31,11 @@ const userSchema=mongoose.Schema({
         type:String,
         required:true
     },
-    repeatPassword:{
+    confirmPassword:{
         type:String,
         required:true,
         validate:function(){
-            return this.repeatPassword==this.password
+            return this.confirmPassword==this.password
         }
     }
     
