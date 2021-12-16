@@ -83,16 +83,19 @@ module.exports.logout=function logout(req,res){
 // protectRoute = which verifies password when the user request for login again 
 
 module.exports.protectRoute = async function protectRoute(req, res, next) {
+    console.log(req.cookies.login);
+    console.log(55);
     try {
-       
+ 
         let token;
         if (req.cookies.login) {
+            console.log("1234")
             token = req.cookies.login;
             let payload = jwt.verify(token, jwt_key);
             if (payload) {
                 const user = await userModel.findById(payload.payload)
-                req.role = user.role;
                 req.id = user.id;
+              
                 next();
             }
             else {
@@ -104,7 +107,7 @@ module.exports.protectRoute = async function protectRoute(req, res, next) {
         else {
             //browser
             const client=req.get('User-Agent');
-            if(client.includes('Chrome')==true)
+            if(client.includes('Chrome','Firefox','Edge','Safari')==true)
             {
                 return res.redirect('/login');
             }

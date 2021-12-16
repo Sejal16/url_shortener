@@ -16,7 +16,8 @@ const urlSchema=new mongoose.Schema({
     required:true
    },
    shortUrl:{
-    type:String
+    type:String,
+    
    },
    timesClicked:{
     type:Number,
@@ -25,10 +26,14 @@ const urlSchema=new mongoose.Schema({
    browsers:{
    type:String    
    },
+   createdAt:{
+    type:Date,
+    default:Date.now()
+},
    user:{
     type:mongoose.Schema.ObjectId,
     ref:'userModel',
-    required:[true,'Url must belong to user'],
+    // required:[true,'Url must belong to user'],
 
 }
     
