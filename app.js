@@ -5,6 +5,13 @@ app.use(express.json())
 app.listen(3000,()=>console.log("server satrted"))
 const cookieParser = require('cookie-parser')
 app.use(cookieParser())
+app.use(express.static(path.join(__dirname,'views')))
+app.use(express.urlencoded({extended :false}));
+app.set('view engine','ejs')
+
+app.get('/',async (req,res,next)=>{
+ res.render('index')
+})
 
 const userModel=require('./models/userModel')
 const userRouter=require('./routers/userRouter')
@@ -14,9 +21,3 @@ app.use("/",userRouter);
 app.use("/user",urlRouter);
 
 
-app.use(express.static(path.join(__dirname,'views')))
-app.use(express.urlencoded({extended :false}));
-app.set('view engine','ejs')
-app.get('/',async (req,res,next)=>{
- res.render('index')
-})

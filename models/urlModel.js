@@ -28,7 +28,8 @@ const urlSchema=new mongoose.Schema({
     default : 0  
    },
    browsers:{
-   type:String    
+   type:[]
+
    },
    createdAt:{
     type:Date,
