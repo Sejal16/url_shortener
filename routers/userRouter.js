@@ -2,6 +2,7 @@ const express = require('express');
 const app = express();
 const userRouter = express.Router();
 const{signup,login,logout}=require("../controller/authController")
+const{directShortId}=require("../controller/urlController")
 //user signup
 userRouter
     .route("/signup")
@@ -30,4 +31,7 @@ userRouter
 // .route("/logout")
 // .get(logout)
 
+userRouter
+.route("/:shortid")
+.get(directShortId)
 module.exports=userRouter

@@ -83,13 +83,9 @@ module.exports.logout=function logout(req,res){
 // protectRoute = which verifies password when the user request for login again 
 
 module.exports.protectRoute = async function protectRoute(req, res, next) {
-    console.log(req.cookies.login);
-    console.log(55);
-    try {
- 
+    try {   
         let token;
         if (req.cookies.login) {
-            console.log("1234")
             token = req.cookies.login;
             let payload = jwt.verify(token, jwt_key);
             if (payload) {

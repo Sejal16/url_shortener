@@ -15,6 +15,10 @@ const urlSchema=new mongoose.Schema({
     type:String,
     required:true
    },
+   shortid:{
+    type:String,
+    
+   },
    shortUrl:{
     type:String,
     
@@ -33,7 +37,7 @@ const urlSchema=new mongoose.Schema({
    user:{
     type:mongoose.Schema.ObjectId,
     ref:'userModel',
-    // required:[true,'Url must belong to user'],
+    required:[true,'Url must belong to user'],
 
 }
     

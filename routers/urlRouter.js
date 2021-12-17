@@ -4,8 +4,10 @@ const urlRouter = express.Router();
 const{protectRoute}=require("../controller/authController");
 const { shortUrl } = require('../controller/urlController');
 
+
+
 //url Shortening
-// urlRouter.use(protectRoute)
+urlRouter.use(protectRoute)
 urlRouter
     .route("/shortUrl/:id")
     .post(shortUrl)
