@@ -12,6 +12,9 @@ app.set('view engine','ejs')
 app.get('/',async (req,res,next)=>{
  res.render('index')
 })
+app.get('/home',async (req,res,next)=>{
+    res.render('home')
+})
 
 const userModel=require('./models/userModel')
 const userRouter=require('./routers/userRouter')
