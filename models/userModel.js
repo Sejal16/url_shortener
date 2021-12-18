@@ -1,5 +1,5 @@
 const mongoose=require('mongoose');
-const emailValidator=require('email-validator');
+
 
 // <--------------Linking MongoDB to server---------->
 const db_link="mongodb+srv://admin:ghJ8u9PPxH2K5s0a@cluster0.jbvca.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
@@ -22,9 +22,7 @@ const userSchema=mongoose.Schema({
         type:String,
         required:true,
         unique:true,  
-        validate:function(){
-            return  emailValidator.validate(this.email);
-        }
+        
         
     },
     password:{

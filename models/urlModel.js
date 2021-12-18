@@ -1,4 +1,5 @@
 const mongoose=require('mongoose');
+
 // <--------------Linking MongoDB to server---------->
 const db_link="mongodb+srv://admin:ghJ8u9PPxH2K5s0a@cluster0.jbvca.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
 mongoose.connect(db_link)

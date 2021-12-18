@@ -4,31 +4,33 @@ const userModel=require('../models/userModel')
 const shortid=require('shortid')
 const validUrl=require("valid-url")
 const DeviceDetector = require("device-detector-js");
+
 module.exports.shortUrl= async function shortUrl(req,res)
 {
 
     try{
-    let id=req.id
+    let id=req.cookies.userID;
+
     let user= await userModel.findById(id);
     // checking valid user or not
    if(user)
    {
-     const {longurl}=req.body;
+     const {longUrl}=req.body;
      // checking if we have a url in req or not
-     if(longurl){
-        const longurlExists= await urlModel.findOne({longurl})
+     if(longUrl){
+        const longUrlExists= await urlModel.findOne({longUrl})
         // if already the url exists
-        if(longurlExists && longurlExists.user===id)
+        if(longUrlExists && longUrlExists.user===id)
         {
-                console.log(longurlExists.user);
+                // console.log(longUrlExists.user);
             res.json({
                 message:"shorturl already exists",
-                url:longurlExists.shortUrl
+                url:longUrlExists.shortUrl
             })
         }
         else{
             const baseUrl='http://localhost:3000';
-            if(!validUrl.isUri(baseUrl) ||  !validUrl.isUri(longurl))
+            if(!validUrl.isUri(baseUrl) ||  !validUrl.isUri(longUrl))
             {
                 res.status(401).json('Invalid url')
             }
@@ -36,17 +38,18 @@ module.exports.shortUrl= async function shortUrl(req,res)
             const urlCode=shortid.generate();
             const shortUrl=baseUrl+'/'+urlCode;
             let newUrl= new urlModel({
-                longurl:longurl,
+                longurl:longUrl,
                 shortid:urlCode,
                 shortUrl:shortUrl,
-                browsers:new Map,
                 user:user
             })
             await newUrl.save()
-            res.json({
-                message:"successfully created",
-                data:newUrl
-            })
+            res.cookie('newShortUrl',newUrl.shortUrl,{httpOnly:true})
+            res.redirect("/user/"+req.cookies.userID)
+            // res.json({
+            //     message:"successfully created",
+            //     data:newUrl
+            // })
         }
 
         }
@@ -68,12 +71,17 @@ res.status(500).json({
     message:err.message
 })
 }
+
 }
 
 module.exports.directShortId= async function directShortId(req,res){
     try{
     const {shortid}=req.params
-    const result=await urlModel.findOne({shortid})
+    console.log(req.params);
+    console.log(shortid);
+    // let shorturl="http//localhost:3000/"+shortid
+    const result=await urlModel.find({shortid})
+    // console.log(result);
     if(!result)
     {
         res.status(501).json({
@@ -88,30 +96,10 @@ module.exports.directShortId= async function directShortId(req,res){
         const device = deviceDetector.parse(client)
         const brow= device.client.name;
         
-    //   console.log(result.browsers.hasOwnProperty(brow));
-    // console.log( Object.keys(result.browsers));
-    // console.log(result.browsers[`${brow}`]);
-    //     if(result.browsers[`${brow}`]!=undefined){
-    //     let val=result.browsers[`${brow}`];
-    //         val+=1;
-    //     console.log(val);
-    //     // result.browsers.set(brow,parseInt(1))
-    //     console.log(result.browsers);
-    // }
-    //     else {
-        // console.log("`${brow}`");
-        // let obj={`${brow}`:"1"}
-        // Object.assign(result.browsers,obj);
-            // result.browsers["`${brow}`"]=1
-        // result.browsers={...result.browsers,`${brow}:${val}`}
-        // result.browsers.push({$brow:1});
-        // }
-        // result.browsers.set(brow,1);
-        // console.log(result.browsers.includes["Chrome"]);
-        // if(result.browsers.includes["Chrome"]==false)
-
+   
+        console.log(result);
         let check=false;
-        for(let i=0;i<result.browsers.length;i++)
+        for(let i=0;result.browsers && i<result.browsers.length;i++)
         {
             if(result.browsers[i]===brow)
             {
@@ -123,13 +111,49 @@ module.exports.directShortId= async function directShortId(req,res){
         result.browsers.push(`${brow}`)
         await result.save()
         console.log("final",result.browsers);
-        res.redirect(result.longurl)
+        res.redirect(result.longUrl)
     }
 }
 catch(err)
 {
     res.status(501).json({
-        message:"not a valid url"
+        message:err.message
     })
 }
 }
+
+module.exports.urlInfo=async function urlInfo(req,res){
+    let urlExp=[]
+   
+    try{
+       
+        let userid=req.params.id;
+        // let user=await userModel.findById(userid);
+        let urls=await urlModel.find();
+        // console.log(userid);
+       
+       urls=urls.filter(url=> url.user._id == userid)
+    //    console.log("urls",urls)
+        if(urls)
+        {
+            urlExp=urls
+            // return res.json({
+            //     message:"url retrieved",
+            //     data:urls
+            // });
+        }
+        else{
+            res.json({
+                message:"no url formed"
+            })
+        }
+    }
+    catch(err)
+    {
+        res.status(500).json({
+            message:err.message
+        });
+    }
+    res.render('user',{userName:req.cookies.userName,urls:urlExp,newShortUrl:req.cookies.newShortUrl})
+}
+    

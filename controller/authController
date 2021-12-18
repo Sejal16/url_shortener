@@ -2,8 +2,9 @@ const express = require('express');
 const userModel=require('../models/userModel')
 const jwt = require('jsonwebtoken');
 const jwt_key = require('../key');
-
-
+const axios=require('axios')
+const emailValidator = require('deep-email-validator');
+const e = require('express');
 //render index  file
 module.exports.renderIndex=function renderIndex(req,res)
 {
@@ -12,15 +13,28 @@ module.exports.renderIndex=function renderIndex(req,res)
 
 module.exports.renderUser=function renderUser(req,res)
 {
-    res.render('user')
+    // console.log(req.cookies.userName);
+    res.render('user',{userName:req.cookies.userName})
+    
 }
+
 // signup user
 module.exports.signup = async function signup(req, res) {
     try {
         let dataObj = req.body;
+        // console.log(dataObj);
+        email=req.body.email
+        async function isEmailValid(email) {
+            return emailValidator.validate(email)
+           }
+       const {valid} = await isEmailValid(email);
+       if(valid){
         let user = await userModel.create(dataObj);
+
         // sendMail('signup',user)
+         
         if (user) {
+            // res.redirect("/user")
             return res.json({
                 message: "User signed up",
                 data: user
@@ -32,29 +46,40 @@ module.exports.signup = async function signup(req, res) {
             });
         }
     }
+    else{
+        res.json({
+            message: "Not a valid email"
+        }); 
+    }
+}
     catch (err) {
         res.json({
             message: err.message
         })
     }
 }
-//  log in 
+//  login 
 module.exports.login= async function login(req,res){
     try {
         let data = req.body;
+        // console.log(data);
         if (data.email) {
             let user = await userModel.findOne({ email: data.email })
             if (user) {
+                // console.log(user);
                 // we will do the bcyrpt later
                 if (data.password === user.password) {
 
                     let uid = user['_id']; //uid
                     let token = jwt.sign({ payload: uid }, jwt_key)
                     res.cookie('login', token, { httpOnly: true });
-                    return res.json({
-                        message: "User has logged in",
-                        userDetails: user
-                    })
+                    res.cookie('userName',user.name,{httpOnly:true})
+                    res.cookie('userID',uid,{httpOnly:true})
+                    res.redirect("/user/" +uid)
+                    // res.json({
+                    //     message: "User has logged in",
+                    //     userDetails: user
+                    // })
                 }
                 else {
                     res.json({
@@ -87,9 +112,13 @@ module.exports.logout=function logout(req,res){
     //   2. Override the cookie with blank space
     //   3. then destroy the cookie after 1 millisecond
     res.cookie('login',' ',{maxAge:1})
-    res.json({
-        message:"logged out"
-    })
+    res.cookie('userID',' ',{maxAge:1})
+    res.cookie('newShortUrl',' ',{maxAge:1})
+    res.cookie('userName',' ',{maxAge:1})
+    res.redirect("/")
+    // res.json({
+    //     message:"logged out"
+    // })
 
 }
 
