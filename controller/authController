@@ -10,9 +10,9 @@ module.exports.renderIndex=function renderIndex(req,res)
     res.render('index')
 }
 
-module.exports.renderHome=function renderHome(req,res)
+module.exports.renderUser=function renderUser(req,res)
 {
-    res.render('home')
+    res.render('user')
 }
 // signup user
 module.exports.signup = async function signup(req, res) {
