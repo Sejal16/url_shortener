@@ -16,15 +16,4 @@ app.use(express.static(path.join(__dirname,'views')))
 app.use(express.urlencoded({extended :false}));
 app.set('view engine','ejs')
 
-
-
-
-app.get('/',async (req,res,next)=>{
-    res.render('index')
-   })
-
-  
-   app.get('/home',async (req,res,next)=>{
-    res.render('home')
-})
 app.use("/",userRouter);

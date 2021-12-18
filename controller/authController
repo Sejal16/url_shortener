@@ -3,6 +3,17 @@ const userModel=require('../models/userModel')
 const jwt = require('jsonwebtoken');
 const jwt_key = require('../key');
 
+
+//render index  file
+module.exports.renderIndex=function renderIndex(req,res)
+{
+    res.render('index')
+}
+
+module.exports.renderHome=function renderHome(req,res)
+{
+    res.render('home')
+}
 // signup user
 module.exports.signup = async function signup(req, res) {
     try {
@@ -27,7 +38,7 @@ module.exports.signup = async function signup(req, res) {
         })
     }
 }
-
+//  log in 
 module.exports.login= async function login(req,res){
     try {
         let data = req.body;
@@ -70,6 +81,7 @@ module.exports.login= async function login(req,res){
         })
     }
 }
+// logout
 module.exports.logout=function logout(req,res){
     //1. First find the cookie named login 
     //   2. Override the cookie with blank space
@@ -80,8 +92,8 @@ module.exports.logout=function logout(req,res){
     })
 
 }
-// protectRoute = which verifies password when the user request for login again 
 
+// protectRoute = which verifies password when the user request for login again 
 module.exports.protectRoute = async function protectRoute(req, res, next) {
     try {   
         let token;

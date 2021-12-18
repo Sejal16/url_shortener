@@ -3,12 +3,17 @@ const app = express();
 const path = require('path');
 const userRouter = express.Router();
 app.use(express.json())
-const{signup,login,logout,protectRoute}=require("../controller/authController")
+const{signup,login,logout,protectRoute,renderIndex,renderHome}=require("../controller/authController")
 const{directShortId, shortUrl}=require("../controller/urlController")
 
+userRouter
+.route('/')
+.get(renderIndex)
 
+userRouter
+.route('/home')
+.get(renderHome)
 
-  
 //user signup
 userRouter
     .route("/signup")
@@ -34,7 +39,9 @@ userRouter
 // userRouter
 // .route("/logout")
 // .get(logout)
-
+userRouter
+.route("/logout")
+.get(logout)
 userRouter
 .route("/:shortid")
 .get(directShortId)
@@ -45,6 +52,3 @@ userRouter
     .route("/home/:id")
     .post(shortUrl)
 
-userRouter
-.route("/logout")
-.get(logout)
