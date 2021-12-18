@@ -17,9 +17,7 @@ userRouter
 .get(renderUser)
 
 
-userRouter
-.route("/:shortid")
-.get(directShortId)
+
 
 //user signup
 userRouter
@@ -56,9 +54,12 @@ userRouter
 
 
 
-userRouter.use(protectRoute)
+// userRouter.use(protectRoute)
 userRouter
     .route("/shortUrl")
     .post(shortUrl)
 
+    userRouter
+.route("/:shortid")
+.get(directShortId)
 module.exports=userRouter
