@@ -7,12 +7,8 @@ const{signup,login,logout,protectRoute}=require("../controller/authController")
 const{directShortId, shortUrl}=require("../controller/urlController")
 
 
-app.get('/',async (req,res,next)=>{
-    res.render('index')
-   })
-   app.get('/home',async (req,res,next)=>{
-       res.render('home')
-   })
+
+  
 //user signup
 userRouter
     .route("/signup")
