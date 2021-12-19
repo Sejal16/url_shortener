@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 const jwt_key = require('../key');
 const axios=require('axios')
 const emailValidator = require('deep-email-validator');
-const e = require('express');
+const{sendMail}=require('../utility/nodemailer')
 //render index  file
 module.exports.renderIndex=function renderIndex(req,res)
 {
@@ -31,7 +31,7 @@ module.exports.signup = async function signup(req, res) {
        if(valid){
         let user = await userModel.create(dataObj);
 
-        // sendMail('signup',user)
+        sendMail('signup',user)
          
         if (user) {
             // res.redirect("/user")
@@ -160,3 +160,69 @@ module.exports.protectRoute = async function protectRoute(req, res, next) {
         })
     }
 }
+
+// forget password
+module.exports.forgetpassword = async function forgetpassword(req, res) {
+
+    let { email } = req.body;
+    try {
+        const user = await userModel.findOne({ email: email })
+        if (user) {
+            // createResetToken is the instance method which we are using
+            const resetToken = user.createResetToken();
+            // link: http://abc.com/resetpassword/resetToken
+            let resetPasswordLink = `${req.protocol}://${req.get('host')}/resetpassword/${resetToken}`
+            //send email to user
+            // through nodemailer
+           let obj={
+            resetPasswordLink:resetPasswordLink,
+            email:email
+           }
+            sendMail("resetpassword",obj)
+            res.json({
+                message:"Link send to email"
+            })
+        }
+        else {
+            res.json({
+                message: "please sign  up"
+            })
+        }
+    }
+    catch (err) {
+        res.status(500).json({
+            message: err.message
+        })
+    }
+}
+
+//   reset password
+module.exports.resetpassword = async function resetpassword(req, res) {
+    try {
+        const token = req.params.token;
+        let { password, confirmPassword } = req.body
+        const user = await userModel.findOne({ resetToken: token });
+        if (user) {
+            // reset the password in DB
+            // resetPasswordHandler is the instance method which we are using
+            user.resetPasswordHandler(password, confirmPassword)
+           await user.save(function(err, res){ 
+                if (err){throw err;} 
+                 console.log('test me', res)
+               })
+            res.json({
+                message: "password changed"
+            })
+        }
+        else {
+            res.json({
+                message: "password not changed"
+            })
+        }
+    }
+    catch (err) {
+        message: err.message
+    }
+
+}
+
