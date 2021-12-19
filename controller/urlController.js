@@ -77,18 +77,12 @@ res.status(500).json({
 module.exports.directShortId= async function directShortId(req,res){
     try{
     const {shortid}=req.params
-    console.log(req.params);
-    console.log(shortid);
-    // let shorturl="http//localhost:3000/"+shortid
-    const result=await urlModel.find({shortid})
-    // console.log(result);
-    if(!result)
-    {
-        res.status(501).json({
-            message:"not a valid url"
-        })
-    }
-    else{
+    //  console.log("shortid:  "+shortid);
+    let result=await urlModel.findOne({shortid:shortid})
+    const{longurl,timesClicked,browsers}=result
+    
+    if(result){
+
         result.timesClicked+=1;
         // add browser
         const client=req.get('User-Agent');
@@ -96,10 +90,8 @@ module.exports.directShortId= async function directShortId(req,res){
         const device = deviceDetector.parse(client)
         const brow= device.client.name;
         
-   
-        console.log(result);
         let check=false;
-        for(let i=0;result.browsers && i<result.browsers.length;i++)
+        for(let i=0; i<result.browsers.length;i++)
         {
             if(result.browsers[i]===brow)
             {
@@ -110,9 +102,15 @@ module.exports.directShortId= async function directShortId(req,res){
         if(!check)
         result.browsers.push(`${brow}`)
         await result.save()
-        console.log("final",result.browsers);
-        res.redirect(result.longUrl)
-    }
+    
+         res.redirect(longurl)
+        // console.log("everting is working");
+ }
+ else{
+    res.json({
+        message:"not a valid url"
+    })
+ }
 }
 catch(err)
 {

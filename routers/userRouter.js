@@ -59,7 +59,7 @@ userRouter
     .route("/shortUrl")
     .post(shortUrl)
 
-    userRouter
+userRouter
 .route("/:shortid")
 .get(directShortId)
 module.exports=userRouter
