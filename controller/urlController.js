@@ -77,7 +77,7 @@ res.status(500).json({
 module.exports.directShortId= async function directShortId(req,res){
     try{
     const {shortid}=req.params
-    //  console.log("shortid:  "+shortid);
+     console.log("shortid:  "+shortid);
     let result=await urlModel.findOne({shortid:shortid})
     const{longurl,timesClicked,browsers}=result
     

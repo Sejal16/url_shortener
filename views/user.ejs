@@ -44,7 +44,7 @@
       <thead>
         <tr>
           <th scope="col">#</th>
-          <th scope="col">Long URL</th>
+          <th width="20%" scope="col">Long URL</th>
           <th scope="col">Short URL</th>
           <th scope="col">Number of Clicks</th>
           <th scope="col">Browers</th>
@@ -57,11 +57,11 @@
             <td>
               <%= (i+1) %>
             </td>
-            <td >
-             <a href="<%= urls[i].longurl %>"><%= urls[i].longurl %></a>
+            <td  width="20%">
+              <%= urls[i].longurl %>
             </td>
             <td>
-            <a href="<%= urls[i].shortUrl %>"><%= urls[i].shortUrl %></a>              
+              <%= urls[i].shortUrl %>
             </td>
             <td>
               <%= urls[i].timesClicked %>
