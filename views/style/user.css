@@ -73,6 +73,26 @@
       align-content: center;
   
   }
+.tablecontainer{
+    margin: 2rem;
+    
+  }
+  table {
+    table-layout: fixed;
+    width: 120px;
+    border: 1px solid red;
+  }
+  td {
+    border: 1px solid blue;
+    overflow:hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    text-align: center;
+  }
+  tr{
+    text-align: center;
+  }
+  
   
   
   @media (max-width: 1000px){
