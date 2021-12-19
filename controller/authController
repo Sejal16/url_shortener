@@ -1,15 +1,18 @@
 const express = require('express');
 const userModel=require('../models/userModel')
+const urlModel=require('../models/urlModel')
 const jwt = require('jsonwebtoken');
 const jwt_key = require('../key');
 const axios=require('axios')
 const emailValidator = require('deep-email-validator');
 const{sendMail}=require('../utility/nodemailer')
 const bcrypt=require('bcrypt')
+const crypto=require('crypto')
 //render index  file
 module.exports.renderIndex=function renderIndex(req,res)
 {
-    res.render('index')
+    let msg = req.cookies.modal || { display: 'none', header : '' , body : ''}
+    res.render('index',{msg:msg})
 }
 
 module.exports.renderUser=function renderUser(req,res)
@@ -36,27 +39,57 @@ module.exports.signup = async function signup(req, res) {
          
         if (user) {
             // res.redirect("/user")
-            return res.json({
-                message: "User signed up",
-                data: user
-            });
+            // return res.json({
+            //     message: "User signed up",
+            //     data: user
+            // });
+            let msg = {
+                header: 'Signed Up Successfully ',
+                body: 'Please login now',
+                display: 'block'
+            }
+            res.cookie('modal',msg,{httpOnly:true,maxAge:3000})
+            res.redirect("/")
         }
         else {
-            res.json({
-                message: "error while signup"
-            });
+            // res.json({
+            //     message: "error while signup"
+            // });
+            let msg = {
+                header: 'Error whileSignUp ',
+                body: 'Please enter valid user details',
+                display: 'block'
+            }
+            res.cookie('modal',msg,{httpOnly:true,maxAge:3000})
+            res.redirect("/")
         }
     }
     else{
-        res.json({
-            message: "Not a valid email"
-        }); 
+        // res.json({
+        //     message: "Not a valid email"
+        // }); 
+        let msg = {
+            header: 'Error whileSignUp ',
+            body: 'Please enter valid EmailId',
+            display: 'block'
+        }
+        res.cookie('modal',msg,{httpOnly:true,maxAge:3000})
+        res.redirect("/")
+    
     }
 }
     catch (err) {
-        res.json({
-            message: err.message
-        })
+        // res.json({
+        //     message: err.message
+        // })
+        let msg = {
+            header: 'Error ',
+            body: 'Please try again',
+            display: 'block'
+        }
+        res.cookie('modal',msg,{httpOnly:true,maxAge:3000})
+        res.redirect("/")
+    
     }
 }
 //  login 
@@ -77,6 +110,7 @@ module.exports.login= async function login(req,res){
                     res.cookie('login', token, { httpOnly: true });
                     res.cookie('userName',user.name,{httpOnly:true})
                     res.cookie('userID',uid,{httpOnly:true})
+                    res.cookie('modal',"",{maxAge:1})
                     res.redirect("/user/" +uid)
                     // res.json({
                     //     message: "User has logged in",
@@ -84,28 +118,54 @@ module.exports.login= async function login(req,res){
                     // })
                 }
                 else {
-                    res.json({
-                        message: "Wrong Credentials"
-                    })
+                    // res.json({
+                    //     message: "Wrong Credentials"
+                    // })
+                    let msg = {
+                        header: 'Wrong Credentials',
+                        body: 'Please enter the correct password',
+                        display: 'block'
+                    }
+                    res.cookie('modal',msg,{httpOnly:true,maxAge:3000})
+                    res.redirect("/")
+                    // alert("Hello! I am an alert box!!");
                 }
             }
 
             else {
-                res.json({
-                    message: "user not found"
-                })
+                // res.json({
+                //     message: "user not found"
+                // })
+                let msg = {
+                    header: 'User Not Found',
+                    body: 'Please register',
+                    display: 'block'
+                }
+                res.cookie('modal',msg,{httpOnly:true,maxAge:3000})
+                res.redirect("/")
             }
         }
         else {
-            res.json({
-                message: "user not found"
-            })
+            // res.json({
+            //     message: "user not found"
+            // })
+            let msg = {
+                header: 'User Not Found',
+                body: 'Please register',
+                display: 'block'
+            }
+            res.cookie('modal',msg,{httpOnly:true,maxAge:3000})
+            res.redirect("/")
         }
     }
     catch (err) {
-        res.json({
-            message: err.message
-        })
+        let msg = {
+            header: 'Error',
+            body: 'Please try again',
+            display: 'block'
+        }
+        res.cookie('modal',msg,{httpOnly:true,maxAge:3000})
+        res.redirect("/")
     }
 }
 // logout
@@ -117,6 +177,7 @@ module.exports.logout=function logout(req,res){
     res.cookie('userID',' ',{maxAge:1})
     res.cookie('newShortUrl',' ',{maxAge:1})
     res.cookie('userName',' ',{maxAge:1})
+    res.cookie('modal',' ',{maxAge:1})
     res.redirect("/")
     // res.json({
     //     message:"logged out"
@@ -168,10 +229,27 @@ module.exports.forgetpassword = async function forgetpassword(req, res) {
 
     let { email } = req.body;
     try {
-        const user = await userModel.findOne({ email: email })
+        
+       let user = await userModel.findOne({ email: email })
+        console.log(user);
         if (user) {
             // createResetToken is the instance method which we are using
-            const resetToken = user.createResetToken();
+            // const resetToken = user.createResetToken();
+       const resetToken=crypto.randomBytes(32).toString("hex");
+            
+            user.resetToken=resetToken;
+            // console.log(user);
+            
+     user.repeatPassword=user.password;
+            await user.save(function(err,result){
+                if (err){
+                    console.log(err);
+                }
+                else{
+                    console.log(result)
+                }
+            })
+            // console.log(user);
             // link: http://abc.com/resetpassword/resetToken
             let resetPasswordLink = `${req.protocol}://${req.get('host')}/resetpassword/${resetToken}`
             //send email to user
@@ -183,27 +261,51 @@ module.exports.forgetpassword = async function forgetpassword(req, res) {
         //    res.redirect("/")
             sendMail("resetpassword",obj);
            
-            res.json({
-                message:"Link send to email"
-            })
+            // res.json({
+            //     message:"Link send to email"
+            // })
+            let msg = {
+                header: 'Mail Successfully Sent',
+                body: 'Check your mail to reset password',
+                display: 'block'
+            }
+            res.cookie('modal',msg,{httpOnly:true,maxAge:3000})
+            res.redirect("/")
         }
         else {
-            res.json({
-                message: "please signup"
-            })
+            // res.json({
+            //     message: "please signup"
+            // })
+            let msg = {
+                header: 'Error ',
+                body: 'Please SignUp',
+                display: 'block'
+            }
+            res.cookie('modal',msg,{httpOnly:true,maxAge:3000})
+            res.redirect("/")
+        
         }
     }
     catch (err) {
-        res.status(500).json({
-            message: err.message
-        })
+        let msg = {
+            header: 'Error',
+            body: 'Please try again',
+            display: 'block'
+        }
+        res.cookie('modal',msg,{httpOnly:true,maxAge:3000})
+        res.redirect("/")
+    
     }
 }
-
+module.exports.renderPassword= function renderPassword(req,res){
+    res.render('changePassword',{token:req.params.token})
+}
 //   reset password
 module.exports.resetpassword = async function resetpassword(req, res) {
     try {
         const token = req.params.token;
+      
+        console.log(token);
         let { password, confirmPassword } = req.body
         const user = await userModel.findOne({ resetToken: token });
         if (user) {
@@ -214,14 +316,28 @@ module.exports.resetpassword = async function resetpassword(req, res) {
                 if (err){throw err;} 
                  console.log('test me', res)
                })
-            res.json({
-                message: "password changed"
-            })
+            // res.json({
+            //     message: "password changed"
+            // })
+            let msg = {
+                header: 'Success',
+                body: 'Password Changed Successfully',
+                display: 'block'
+            }
+            res.cookie('modal',msg,{httpOnly:true,maxAge:3000})
+            res.redirect("/")
         }
         else {
-            res.json({
-                message: "password not changed"
-            })
+            // res.json({
+            //     message: "password not changed"
+            // })
+            let msg = {
+                header: 'Failed',
+                body: 'Password did not Changed',
+                display: 'block'
+            }
+            res.cookie('modal',msg,{httpOnly:true,maxAge:3000})
+            res.redirect("/")
         }
     }
     catch (err) {
@@ -230,3 +346,6 @@ module.exports.resetpassword = async function resetpassword(req, res) {
 
 }
 
+module.exports.renderFgtPage=function renderFgtPage(rq,res){
+    res.render('resetPassword')
+}

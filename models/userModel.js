@@ -37,7 +37,10 @@ const userSchema=mongoose.Schema({
             return this.confirmPassword==this.password
         }
     },
-    resetToken:String
+    resetToken:{
+        type:String, 
+        default:"" 
+    }
     
 });
 
@@ -46,14 +49,14 @@ userSchema.pre('save', async function(){
     let hashpassword= await bcrypt.hash(this.password,salt);
     // console.log(hashpassword);
     this.password=hashpassword; 
-    this.confirmpassword=hashpassword
+    this.confirmPassword=hashpassword;
 })
-userSchema.methods.createResetToken= function(){
-    // to create a unique 32bit token we use the npm module crypto
-    const resetToken=crypto.randomBytes(32).toString("hex");
-    this.resetToken=resetToken;
-    return resetToken;
-}
+// userSchema.methods.createResetToken= function(){
+//     // to create a unique 32bit token we use the npm module crypto
+//     const resetToken=crypto.randomBytes(32).toString("hex");
+//     this.resetToken=resetToken;
+//     return resetToken;
+// }
 
 userSchema.methods.resetPasswordHandler= function(password,confirmPassword){
 this.password=password;

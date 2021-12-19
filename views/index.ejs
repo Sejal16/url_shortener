@@ -5,10 +5,12 @@
 	<meta charset="UTF-8">
 	<title>Shrinker</title>
 	<link rel="stylesheet" href="./style/style.css">
-
+	<link rel="stylesheet" href="/style/modal.css">
 </head>
 
 <body>
+<!-- Modal  -->
+<%- include('modal.ejs', {msg:msg}) %>
 
 	<div id="container" class="container">
 		<!-- FORM SECTION -->
@@ -67,7 +69,7 @@
 						</button>
 						<p>
 							<b>
-							<a href="/forgetpassword">Forgot password?</a>	
+							<a href="/fgtPassword">Forgot password?</a>	
 							</b>
 						</p>
 						<p>

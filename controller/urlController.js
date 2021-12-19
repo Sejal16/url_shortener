@@ -18,23 +18,49 @@ module.exports.shortUrl= async function shortUrl(req,res)
      const {longUrl}=req.body;
      // checking if we have a url in req or not
      if(longUrl){
-        const longUrlExists= await urlModel.findOne({longUrl})
+       let longUrlExists= await urlModel.find({longurl:longUrl})
         // if already the url exists
-        if(longUrlExists && longUrlExists.user===id)
-        {
+        longUrlExists.filter(url=> url.user == id)
+    
+        if(longUrlExists.length!=0){
+            // console.log(1);
+            // console.log(longUrlExists.shortid);
+            console.log(longUrlExists);
+            const {shortUrl}= longUrlExists[0]
+
+            console.log(shortUrl);
+            res.cookie('newShortUrl',shortUrl,{httpOnly:true})
+            let msg = {
+                header: 'Short URL already exists',
+                body: 'Successfully shrinken Long URL',
+                display: 'block'
+            }
+            res.cookie('modal',msg,{httpOnly:true,maxAge:3000})
+            res.redirect("/user/"+req.cookies.userID)
+
                 // console.log(longUrlExists.user);
-            res.json({
-                message:"shorturl already exists",
-                url:longUrlExists.shortUrl
-            })
+            // res.json({
+            //     message:"shorturl already exists",
+            //     url:longUrlExists.shortUrl
+            // })
+            
         }
         else{
+          
             const baseUrl='http://localhost:3000';
             if(!validUrl.isUri(baseUrl) ||  !validUrl.isUri(longUrl))
             {
-                res.status(401).json('Invalid url')
+                let msg = {
+                    header: 'Invalid',
+                    body: 'Successfully shrinken Long URL',
+                    display: 'block'
+                }
+                res.cookie('modal',msg,{httpOnly:true,maxAge:3000})
+                res.redirect("/user/"+req.cookies.userID)
+
             }
             else{
+             
             const urlCode=shortid.generate();
             const shortUrl=baseUrl+'/'+urlCode;
             let newUrl= new urlModel({
@@ -45,6 +71,12 @@ module.exports.shortUrl= async function shortUrl(req,res)
             })
             await newUrl.save()
             res.cookie('newShortUrl',newUrl.shortUrl,{httpOnly:true})
+            let msg = {
+                header: 'Short URL generated',
+                body: 'Successfully shrinken Long URL',
+                display: 'block'
+            }
+            res.cookie('modal',msg,{httpOnly:true,maxAge:3000})
             res.redirect("/user/"+req.cookies.userID)
             // res.json({
             //     message:"successfully created",
@@ -122,7 +154,7 @@ catch(err)
 
 module.exports.urlInfo=async function urlInfo(req,res){
     let urlExp=[]
-   
+    let msg = req.cookies.modal || { display: 'none', header : '' , body : ''}
     try{
        
         let userid=req.params.id;
@@ -152,6 +184,6 @@ module.exports.urlInfo=async function urlInfo(req,res){
             message:err.message
         });
     }
-    res.render('user',{userName:req.cookies.userName,urls:urlExp,newShortUrl:req.cookies.newShortUrl})
+    res.render('user',{userName:req.cookies.userName,urls:urlExp,newShortUrl:req.cookies.newShortUrl,msg:msg})
 }
     

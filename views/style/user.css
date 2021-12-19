@@ -102,6 +102,7 @@
     text-align: center;
     padding: 16px 0;
    }
+  
    .menu li:hover {
     display: inline-block;
     background-color:#4c9e9e;
@@ -117,3 +118,4 @@
     display: block;
    }
   
+  }

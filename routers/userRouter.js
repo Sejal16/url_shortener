@@ -1,9 +1,10 @@
+const { use } = require('bcrypt/promises');
 const express = require('express');
 const app = express();
 const path = require('path');
 const userRouter = express.Router();
 app.use(express.json())
-const{signup,login,logout,protectRoute,renderIndex,renderUser,forgetpassword}=require("../controller/authController")
+const{signup,login,logout,protectRoute,renderIndex,renderUser,forgetpassword,renderFgtPage,renderPassword,resetpassword}=require("../controller/authController")
 const{directShortId, shortUrl,urlInfo}=require("../controller/urlController")
 
 //render the index.js file or the home file
@@ -27,19 +28,21 @@ userRouter
     .post(login)
 
 userRouter
+.route("/fgtPassword")
+.get(renderFgtPage)
+
+userRouter
     .route("/forgetpassword")
     .post(forgetpassword)
     
 
-// // Forget password
-// userRouter
-// .route("/forgetpassword")
-// .post(forgetpassword)
 
-// //reset password
-// userRouter
-// .route("/resetpassword/:token")
-// .post(resetpassword)
+
+//reset password
+userRouter
+.route("/resetpassword/:token")
+.get(renderPassword)
+.post(resetpassword)
 
 
 userRouter

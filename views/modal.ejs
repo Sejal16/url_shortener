@@ -1,0 +1,34 @@
+<!-- modal partial -->
+<!-- msg: {display} | header  |  body -->
+
+<div id="myModal" class="<%= msg.display === 'block' ? 'modal' : 'modal_none' %>">
+    <div class="modal-content" >
+        <div class="modal-header">
+        <h3><%= msg.header %></h3>
+        <span class="close">&times;</span>
+        </div>
+        <div class="modal-body">
+            <p><%= msg.body %></p>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Get the modal
+        var modal = document.getElementById("myModal");
+
+        // Get the <span> element that closes the modal
+        var span = document.getElementsByClassName("close")[0];
+
+        // When the user clicks on <span> (x), close the modal
+        span.onclick = function () {
+            modal.style.display = "none";
+        }
+
+        // When the user clicks anywhere outside of the modal, close it
+        window.onclick = function (event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+</script>
