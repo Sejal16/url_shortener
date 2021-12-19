@@ -14,20 +14,22 @@
 </head>
 
 <body>
-  <nav>
-    <div class="logo">
-      Shrinker
-    </div>
-    <input type="checkbox" id="click">
-    <label for="click" class="menu-btn">
-      <i class="fas fa-bars"></i>
-    </label>
-    <ul>
-      <li><a class="active" href="#">
+  <nav class="navbar">
+    <!-- LOGO -->
+    <div class="logo">Shrinker</div>
+    <!-- NAVIGATION MENU -->
+    <ul class="nav-links">
+      <!-- USING CHECKBOX HACK -->
+      <input type="checkbox" id="checkbox_toggle" />
+      <label for="checkbox_toggle" class="hamburger">&#9776;</label>
+      <!-- NAVIGATION MENUS -->
+      <div class="menu">
+        
+        <li><a class="active" href="#">
           <%= userName %>
         </a></li>
-      <li><a href="/logout">Logout</a></li>
-
+      <li><a href="/logout">Logout</a></li>        
+      </div>
     </ul>
   </nav>
   <div class="container">
