@@ -28,7 +28,7 @@ module.exports.shortUrl= async function shortUrl(req,res)
             console.log(longUrlExists);
             const {shortUrl}= longUrlExists[0]
 
-            console.log(shortUrl);
+            // console.log(shortUrl);
             res.cookie('newShortUrl',shortUrl,{httpOnly:true})
             let msg = {
                 header: 'Short URL already exists',
@@ -167,6 +167,7 @@ module.exports.urlInfo=async function urlInfo(req,res){
         if(urls)
         {
             urlExp=urls
+            // console.log(urlExp);
             // return res.json({
             //     message:"url retrieved",
             //     data:urls
