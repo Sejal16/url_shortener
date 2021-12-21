@@ -10,7 +10,7 @@
     align-items: center;
     justify-content: space-between;
     padding: 20px;
-    background-color: rgb(13, 32, 32;
+    background-color: rgb(13, 32, 32);
     color: #fff;
    }
    .nav-links a {
@@ -141,7 +141,7 @@
    .menu { 
     display:none;
     position: absolute;
-    background-color:rgb(13, 32, 32;
+    background-color:rgb(13, 32, 32);
     right: 0;
     left: 0;
     text-align: center;
