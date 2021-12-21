@@ -47,7 +47,7 @@ module.exports.shortUrl= async function shortUrl(req,res)
         }
         else{
           
-            const baseUrl='http://localhost:3000';
+            const baseUrl='https://urlshk.herokuapp.com';
             if(!validUrl.isUri(baseUrl) ||  !validUrl.isUri(longUrl))
             {
                 let msg = {
