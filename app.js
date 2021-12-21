@@ -2,7 +2,8 @@ const express = require('express');
 const app = express();
 const path = require('path');
 app.use(express.json())
-app.listen(3000,()=>console.log("server satrted"))
+const port=process.env.PORT || 3000
+app.listen(port)
 
 const userModel=require('./models/userModel')
 const urlModel=require('./models/urlModel')
@@ -18,6 +19,3 @@ app.set('view engine','ejs')
 
 app.use("/",userRouter);
 
-
-/// models
-// loader

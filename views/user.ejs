@@ -44,11 +44,12 @@
           class="form-control col mr-2">
         <button class="btn btn-success shrink" type="submit">Shrink</button>
       </form>
-      <input  placeholder="Your shrinken URL"  class="form-control col mr-2" value=" <%= newShortUrl %>" readonly>
+      <div class="my-4 form-inline urls">
+        <input id="textbox" placeholder="Your shrinken URL"  class="form-control col mr-2" value=" <%= newShortUrl %>" readonly >
+        <button class="btn btn-primary" onclick="copyText()" >Copy</button>
+      </div>      
    
-    </div>
-   
-    
+    </div>       
     <div class="tablecontainer table-responsive-sm">
       <table class="table table-bordered">
         <thead class="table-dark">
@@ -85,6 +86,25 @@
         </tbody>
       </table>  
     </div>
+    </div>
   </div>
+  <script>
+          function copyText() {
+      
+      /* Select text area by id*/
+      var Text = document.getElementById("textbox");
+
+      /* Select the text inside text area. */
+      Text.select();
+
+      /* Copy selected text into clipboard */
+      navigator.clipboard.writeText(Text.value);
+
+      /* Set the copied text as text for 
+      div with id clipboard */
+      document.getElementById("clipboard")
+          .innerHTML = Text.value;
+  }
+  </script>
 </body>
 </html>
