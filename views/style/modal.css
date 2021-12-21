@@ -2,7 +2,7 @@
 .modal {
   display: block;
   position: fixed; /* Stay in place */
-  z-index: 10; /* Sit on top */
+  z-index: 15; /* Sit on top */
   padding-top: 10px; /* Location of the box */
   left: 0;
   top: 0;
