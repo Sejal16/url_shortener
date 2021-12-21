@@ -58,15 +58,10 @@
   .container{
       background-color: aquamarine;
   }
-  .tablecontainer{
-     
-      display: flex;
-      background-color: aquamarine;
-      align-content: center;
-  
-  }
+
 .tablecontainer{
     margin: 2rem;
+    background-color: aliceblue;
     
   }
   table {
