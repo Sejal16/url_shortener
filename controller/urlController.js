@@ -21,8 +21,7 @@ module.exports.shortUrl= async function shortUrl(req,res)
        let longUrlExists= await urlModel.find({longurl:longUrl})
         // if already the url exists
       longUrlExists=  longUrlExists.filter(url=> url.user === id)
-    console.log("userid",id);
-    console.log(longUrlExists.length);
+
         if(longUrlExists.length!=0){
            
             const {shortUrl}= longUrlExists[0]

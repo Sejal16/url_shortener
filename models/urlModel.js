@@ -1,8 +1,8 @@
 const mongoose=require('mongoose');
-
+require('dotenv').config({ path: './data.env' });
 // <--------------Linking MongoDB to server---------->
-const db_link="mongodb+srv://admin:ghJ8u9PPxH2K5s0a@cluster0.jbvca.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
-mongoose.connect(db_link)
+
+mongoose.connect(process.env.DB_URL)
 .then(function(db){
     console.log("url db connected");
 })
